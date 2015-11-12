@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="366818ad-6b76-470d-8475-f46b02bfcba1" name="Default" comment="Created Country Class, changed some answers to use Country objects">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Country.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Starter2.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/Coursework/Starter.class" afterPath="" />
+    <list default="true" id="366818ad-6b76-470d-8475-f46b02bfcba1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Starter.java" afterPath="$PROJECT_DIR$/src/Starter.java" />
     </list>
     <ignored path="Coursework.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -45,8 +41,8 @@
       <file leaf-file-name="Starter2.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Starter2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334">
-              <caret line="46" column="24" selection-start-line="46" selection-start-column="24" selection-end-line="46" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.2">
+              <caret line="43" column="64" selection-start-line="43" selection-start-column="64" selection-end-line="43" selection-end-column="64" />
               <folding />
             </state>
           </provider>
@@ -721,12 +717,19 @@
       <workItem from="1447096737609" duration="3715000" />
       <workItem from="1447154494514" duration="6122000" />
       <workItem from="1447342924201" duration="11142000" />
-      <workItem from="1447364844870" duration="5495000" />
+      <workItem from="1447364844870" duration="5546000" />
     </task>
+    <task id="LOCAL-00001" summary="Created Country Class, changed some answers to use Country objects">
+      <created>1447372032461</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1447372032461</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33066000" />
+    <option name="totallyTimeSpent" value="33117000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="30" width="1368" height="739" extended-state="6" />
@@ -901,8 +904,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Starter2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="46" column="24" selection-start-line="46" selection-start-column="24" selection-end-line="46" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.2">
+          <caret line="43" column="64" selection-start-line="43" selection-start-column="64" selection-end-line="43" selection-end-column="64" />
           <folding />
         </state>
       </provider>
