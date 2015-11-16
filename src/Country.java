@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -8,7 +10,7 @@ public class Country {
     //Fields
     private String country;
     private TreeMap<Integer,TreeMap<String,Integer>> langInterestByYear;
-    // java	c++	c#	python	JavaScript
+
     private String[] langs = new String[]{"java","c++","c#","python","JavaScript"};
     // Methods
     public void setYear(int year,int[] interestInLang){
@@ -22,8 +24,41 @@ public class Country {
         this.langInterestByYear.put(year,interestByLang);
     }
 
+    public String popInYear(int year,String maxOrmin){
+        int valOfPop;
+        switch (maxOrmin.toLowerCase()){
+            case "max":
+                valOfPop=(Collections.max(this.getInterestByLang(year).values()));
+                String mostPop="";
+                for (Map.Entry<String, Integer> entry : this.getInterestByLang(year).entrySet()) {
+                    if (entry.getValue()==valOfPop) {
+                        mostPop = entry.getKey();
+                    }
+                }
+                return mostPop;
+            case "min":
+                valOfPop=(Collections.min(this.getInterestByLang(year).values()));
+                String leastPop="";
+                for (Map.Entry<String, Integer> entry : this.getInterestByLang(year).entrySet()) {
+                    if (entry.getValue()==valOfPop) {
+                        leastPop = entry.getKey();
+                    }
+                }
+                return leastPop;
+            default:
+                return "You must pick 'max' or 'min'";
+        }
+    }
+
     public int getInterest(int year,String lang) {
         return this.langInterestByYear.get(year).get(lang);
+    }
+    public int getCombinedInterest(int year){
+        int combined=0;
+        for(String lang:langs)
+            combined+= this.getInterest(year,lang);
+        return combined;
+
     }
 
     public boolean hasYear(int year){
