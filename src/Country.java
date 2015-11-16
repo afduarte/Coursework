@@ -5,6 +5,9 @@ import java.util.TreeMap;
 
 /**
  * Created by antero on 12/11/15.
+ * Class country stores all the data for a country in a TreeMap of Integer(year) to
+ * a TreeMap of String(language) to Integer(interest in language)
+ *
  */
 public class Country {
     //Fields
@@ -14,13 +17,11 @@ public class Country {
     private String[] langs = new String[]{"java","c++","c#","python","JavaScript"};
     // Methods
     public void setYear(int year,int[] interestInLang){
-        //TreeMap<Integer,TreeMap<String,Integer>> interestByYear = new TreeMap<>();
+        //Takes a year and an array of Integer(interest in each language) and puts them into a TreeMap
+        //That TreeMap is then put into the TreeMap langInterestByYear of this() country
         TreeMap<String,Integer> interestByLang = new TreeMap<>();
-        interestByLang.put("java", interestInLang[0]);
-        interestByLang.put("c++", interestInLang[1]);
-        interestByLang.put("c#", interestInLang[2]);
-        interestByLang.put("python", interestInLang[3]);
-        interestByLang.put("JavaScript", interestInLang[4]);
+        for(int i=0;i<langs.length;i++)
+            interestByLang.put(langs[i],interestInLang[i]);
         this.langInterestByYear.put(year,interestByLang);
     }
 
@@ -100,7 +101,7 @@ public class Country {
     }
 
     //Constructors
-
+    //Takes in a String(country name) and initializes a new empty TreeMap to hold the data for the country
     Country(String name){
         this.country = name;
         langInterestByYear = new TreeMap<>();

@@ -11,13 +11,14 @@ import java.util.*;
 public class Starter2 {
     public static void main(String[] args) throws Exception {
         BufferedReader fh =
-                new BufferedReader(new FileReader("data/iot.txt"));
+                new BufferedReader(new FileReader("data/iot.txt"));             //Open file iot.txt
         //First line contains the language names
         String s = fh.readLine();
         List<String> langs =
                 new ArrayList<>(Arrays.asList(s.split("\t")));
         langs.remove(0);	//Throw away the first word - "week"
 
+        //Create a Treemap of Week(See Week class) to a treemap of String(Language) to Integer(Interest)
         TreeMap<Week,TreeMap<String,Integer>> interestByWeek = new TreeMap<>();
 
         while ((s=fh.readLine())!=null)
@@ -36,9 +37,10 @@ public class Starter2 {
         fh.close();
 
         TreeMap<String,Country> world = new TreeMap<>();
-
-        for (int i=2004;i<2016;i++){
-            TreeMap<String,int[]> interestMap = new TreeMap<>(); //Temporarily hold the country name and interest values
+        //Go through every year file, create a new country for every country there and put it in the TreeMap world
+        for (int i=2004;i<=2015;i++){
+            //Temporary holder for the country name and interest values
+            TreeMap<String,int[]> interestMap = new TreeMap<>();
             BufferedReader getInterest =
                     new BufferedReader(new FileReader("data/"+i+".txt"));
             String s2 = getInterest.readLine(); //Throw away the first line
@@ -57,16 +59,18 @@ public class Starter2 {
                 interestMap.put(wrds[0],interest);
 
             }
-
+            //Checks if the country exists in world.
+            //If it doesn't exist, creates it
             for(String country:interestMap.keySet()) {
                 Country c = world.get(country);
                 if(c==null) {
                     c = new Country(country);
                     world.put(country,c);
                 }
+                //Sets the year for country c
                 c.setYear(i,interestMap.get(country));
                 }
-            getInterest.close();
+            getInterest.close(); //Closes the file
             }
 
 
@@ -107,7 +111,7 @@ public class Starter2 {
         System.out.printf("Q5 %d regions have never demonstrated any interest in python\n ",q5acc);
 
         //Medium ones:
-        System.out.println("Medium Ones");
+        System.out.println("Medium Ones:");
         //Question 6: Which regions have demonstrated interests in exactly two programming language in 2010? (Give the region and the two languages.)
 
         System.out.println("Q6 The following countries have demonstrated interest in exactly 2 languages in 2010: ");
@@ -210,6 +214,8 @@ public class Starter2 {
                 }
         System.out.println(mostInPython);
 
+        //Hard ones:
+        System.out.println("Hard Ones:");
         //Question 11: Which are the top 5 regions that demonstrated significant growth of interests in programming languages in general?
         //Significant growth will be 20% more than the interest in first year
         TreeMap<Integer,String> grownInterest = new TreeMap<>(); //Holds growth against  country name
