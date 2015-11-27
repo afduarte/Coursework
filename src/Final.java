@@ -1,16 +1,15 @@
-/**
- * Created by antero on 09/11/15.
- */
-/*
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Period;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Starter2 {
+/**
+ * Created by antero on 26/11/15.
+ */
+public class Final {
     public static void main(String[] args) throws Exception {
         BufferedReader fh =
                 new BufferedReader(new FileReader("data/iot.txt"));             //Open file iot.txt
@@ -71,45 +70,18 @@ public class Starter2 {
                 }
                 //Sets the year for country c
                 c.setYear(i,interestMap.get(country));
-                }
-            getInterest.close(); //Closes the file
             }
+            getInterest.close(); //Closes the file
+        }
 
 
         // Data structures available are: langs, interestByWeek, world
         // langs is a list of languages
         // iot is interest over time - a map from week to a map from languages
         //interestByWeek is a map of Week(Class created to have start and end dates as LocalDate instead of string)
-            // to a map of Languages to Interest
+        // to a map of Languages to Interest
         // world maps every country in the world.
         // an object of type country contains data for every country in the world over the years
-
-        //Easy ones:
-        System.out.println("Easy Ones:");
-        //Question 1: How many weeks does the data set cover in total?
-        System.out.println("Q1 Number of Weeks: "+interestByWeek.size());
-
-        //Question 2: What was the interest in JavaScript in the week "2014-10-12 - 2014-10-18"?
-        System.out.println("Q2 Interest in JS in week 2014-10-12 - 2014-10-18: "+interestByWeek.get(new Week("2014-10-12","2014-10-18")).get("JavaScript"));
-        //Question 3: In which week did Java's level of interest first dropped below 50?
-        for(Week wk:interestByWeek.keySet())
-            if(interestByWeek.get(wk).get("java")<50) {
-                System.out.println("Q3 Java first dropped below 50 in week: " + wk);
-                break;
-            }
-        //Question 4: In how many weeks was there more interests in C++ over C#?
-        int q4acc = 0;
-        for(Week wk:interestByWeek.keySet())
-            if(interestByWeek.get(wk).get("c++")>interestByWeek.get(wk).get("c#"))
-                q4acc++;
-        System.out.println("Q4 There was more interest in C++ over C# in "+q4acc+" weeks");
-
-        //Question 5: How many regions have never demonstrated any interest in Python?
-        System.out.printf("Q5 %d regions have never demonstrated any interest in python\n ",
-                world.values().stream()
-                        .filter(c->c.getInterestByYear("python").isEmpty())
-                        .count());
-
 
 
         //Medium ones:
@@ -213,7 +185,7 @@ public class Starter2 {
                         }
                     }
                 }
-        System.out.println(mostInPython);
+        //System.out.println(mostInPython);
 
         //Hard ones:
         System.out.println("Hard Ones:");
@@ -237,8 +209,41 @@ public class Starter2 {
 
         //Question 12: Which programming language set the record for losing the most interests over a 12 months period? When did this happen?
         System.out.println("Q12:");
+        /*  BLACK BOX METHOD
+        *   INPUT -> BOX -> OUTPUT
+        *   interestByWeek -> BOX -> language that lost the most interest over a 12 month period and when in happened
+        *       iBW -> BOX -> languages that lost interest
+        *           langs lost int -> BOX ->
+        *   get lost of interest period, put it to map of period to language
+        *
+        */
+        TreeMap<Week,TreeMap<String,Integer>> temp = new TreeMap<>();
+
+        for(int i=0; i<interestByWeek.size()-1;i++) {
+            TreeMap<String,Integer> temp2 = new TreeMap<>();
+            for (String lang: langs) {
+                if (interestByWeek.get(interestByWeek.keySet().toArray()[i]).get(lang)
+                        > interestByWeek.get(interestByWeek.keySet().toArray()[i + 1]).get(lang))
+                    temp2.put(lang, interestByWeek.get(interestByWeek.keySet().toArray()[i]).get(lang)
+                            -interestByWeek.get(interestByWeek.keySet().toArray()[i+1]).get(lang));
+            }
+            Week wk1 =(Week)interestByWeek.keySet().toArray()[i];
+            Week wk2 =(Week)interestByWeek.keySet().toArray()[i+1];
+            temp.put(new Week(wk1.start(),wk2.end()),temp2);
+        }
+
+        /*for(Week wk:temp.keySet())
+            if(temp.get(wk).isEmpty())
+                temp.remove(wk);*/
+
+        for(Week wk:temp.keySet()) {
+            System.out.println(wk.toString() + " " + temp.get(wk));
+        }
 
 
+        System.out.println("TESTE!!!");
+        System.out.println(interestByWeek.get(interestByWeek.keySet().toArray()[0]));
+        System.out.println(interestByWeek.get(interestByWeek.keySet().toArray()[1]));
 
 
         //Question 13: Languages popular at University may be higher in September and October
@@ -253,65 +258,29 @@ public class Starter2 {
         //2013/14	5.94	6.67 c++
         //2014/15	5.76	6.50 c++
 
-        //Map to hold the weeks in each academic year
-        TreeMap<String,ArrayList<Week>> academicYearMap = new TreeMap<>();
-
-        //Get a list of all the academic years
-        ArrayList<String> academicYearList = new ArrayList<>();
-        for(Week wk : interestByWeek.keySet()){
-            String newAcadYear = String.format("%d/%d", wk.start().getYear(), wk.start().getYear() + 1);
-            if(!academicYearList.contains(newAcadYear))
-                academicYearList.add(newAcadYear);
-        }
-
-
-        //Put all the weeks of September and October into the academicYearMap
-        for(String acadYearString:academicYearList) {
-            ArrayList<Week> academicYear = new ArrayList<>();
-            LocalDate startOfAcadYear = LocalDate.of(Integer.parseInt(acadYearString.split("/")[0]), Month.SEPTEMBER, 1);
-            LocalDate endOfOctober =  LocalDate.of(Integer.parseInt(acadYearString.split("/")[0]), Month.OCTOBER, 31);
-            for (Week wk : interestByWeek.keySet()) {
-                String wkAcadYear = String.format("%d/%d", wk.start().getYear(), wk.start().getYear() + 1);
-                if (acadYearString.equals(wkAcadYear) && wk.start().isAfter(startOfAcadYear) && wk.start().isBefore(endOfOctober)) {
-                    academicYear.add(wk);
-                }
-                if(!academicYear.isEmpty())
-                    academicYearMap.put(acadYearString, academicYear);
-            }
-        }
-
-        TreeMap<String,Float> avgJava = new TreeMap<>();
-        for(int i=2004;i<=2014;i++) {
-            float totalJava = 0;
-            int count = 0;
-            for (Week wk : interestByWeek.keySet())
-                if(wk.start().getYear()==i) {
-                    totalJava += interestByWeek.get(wk).get("java");
-                    count++;
-                }
-            avgJava.put(""+i,totalJava/count);
-        }
-
-
-        TreeMap<String,Float> avgAcadJava = new TreeMap<>();
-        for(String acadYear:academicYearMap.keySet()) {
-            ArrayList<Week> weeks = academicYearMap.get(acadYear);
-            float totalJava = 0;
-            int count = 0;
-            for (Week wk : weeks){
-                totalJava += interestByWeek.get(wk).get("java");
-                count++;
-            }
-            avgAcadJava.put(acadYear,totalJava/count);
-        }
         System.out.println("Q13: ");
         System.out.printf("Acad Year\tAvg Yr\tAvg Sep/Oct\n");
-        if(avgAcadJava.size()==avgJava.size())
-            for(int i=0;i<avgAcadJava.size();i++){
-                System.out.printf("%s\t%1.2f\t%1.2f\t%s\n",academicYearList.get(i),avgAcadJava.get(academicYearList.get(i)),avgJava.get(academicYearList.get(i).split("/")[0]),langs.get(0));
-            }
+
+
+        for (int i=2004;i<2015;i++){
+            float totalJava =0;
+            int totalCount =0;
+            float acadJava = 0;
+            int acadCount =0;
+            for (Week wk:interestByWeek.keySet())
+                if(wk.start().isAfter(LocalDate.of(i,Month.JANUARY, 1)) && wk.start().isBefore(LocalDate.of(i+1,Month.JANUARY, 1))) {
+                    totalJava += interestByWeek.get(wk).get("java");
+                    totalCount++;
+                }
+            for (Week wk:interestByWeek.keySet())
+                if(wk.start().isAfter(LocalDate.of(i,Month.SEPTEMBER, 1)) && wk.start().isBefore(LocalDate.of(i,Month.NOVEMBER, 1))) {
+                    acadJava += interestByWeek.get(wk).get("java");
+                    acadCount++;
+                }
+            System.out.printf("%s\t%1.2f\t%1.2f\t%s\n",i+"/"+(i+1),totalJava/totalCount,acadJava/acadCount,"java");
+        }
 
 
 
     }
-}*/
+}

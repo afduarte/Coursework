@@ -54,6 +54,7 @@ public class Country {
     public int getInterest(int year,String lang) {
         return this.langInterestByYear.get(year).get(lang);
     }
+
     public int getCombinedInterest(int year){
         int combined=0;
         for(String lang:langs)
