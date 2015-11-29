@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.security.Key;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
@@ -208,42 +209,64 @@ public class Final {
                 .forEach(x -> System.out.println(x.getKey()+" grew "+x.getValue()+" points."));
 
         //Question 12: Which programming language set the record for losing the most interests over a 12 months period? When did this happen?
+        long sT=System.currentTimeMillis();
         System.out.println("Q12:");
-        /*  BLACK BOX METHOD
-        *   INPUT -> BOX -> OUTPUT
-        *   interestByWeek -> BOX -> language that lost the most interest over a 12 month period and when in happened
-        *       iBW -> BOX -> languages that lost interest
-        *           langs lost int -> BOX ->
-        *   get lost of interest period, put it to map of period to language
-        *
-        */
-        TreeMap<Week,TreeMap<String,Integer>> temp = new TreeMap<>();
+        TreeMap<LocalDate,TreeMap<String,Integer>> interestByStartWeek = new TreeMap<>();
+        for(Map.Entry entry:interestByWeek.entrySet()) {
+            Week wk = (Week)entry.getKey();
+            TreeMap<String,Integer> val = (TreeMap<String, Integer>) entry.getValue();
+            interestByStartWeek.put(wk.start(),val);
+        }
 
-        for(int i=0; i<interestByWeek.size()-1;i++) {
-            TreeMap<String,Integer> temp2 = new TreeMap<>();
-            for (String lang: langs) {
-                if (interestByWeek.get(interestByWeek.keySet().toArray()[i]).get(lang)
-                        > interestByWeek.get(interestByWeek.keySet().toArray()[i + 1]).get(lang))
-                    temp2.put(lang, interestByWeek.get(interestByWeek.keySet().toArray()[i]).get(lang)
-                            -interestByWeek.get(interestByWeek.keySet().toArray()[i+1]).get(lang));
+
+        //Week holds two values of type LocalDate. Even though it wasn't created to work like this,
+        // it can hold values with a 12 month difference, being perfect to hold the localdates for this case.
+        Week lossPair = null;
+        String lossLang = "";
+        int loss = 0;
+
+        for(LocalDate wk:interestByStartWeek.keySet()) {
+            for (String lang : langs) {
+                int wk1 = interestByStartWeek.get(wk).get(lang);
+                LocalDate closest = closestWeek(interestByStartWeek, wk);
+                if (closest != null) {
+                    int wk2 = interestByStartWeek.get(closest).get(lang);
+                    if(wk1-wk2>loss){
+                        lossPair = new Week(wk,closest);
+                        lossLang = lang;
+                        loss = wk1-wk2;
+                    }
+                }
             }
-            Week wk1 =(Week)interestByWeek.keySet().toArray()[i];
-            Week wk2 =(Week)interestByWeek.keySet().toArray()[i+1];
-            temp.put(new Week(wk1.start(),wk2.end()),temp2);
         }
 
-        /*for(Week wk:temp.keySet())
-            if(temp.get(wk).isEmpty())
-                temp.remove(wk);*/
+        System.out.printf("%s lost the most interest(%d points) from %s to %s\n",lossLang,loss,lossPair.start(),lossPair.end());
 
-        for(Week wk:temp.keySet()) {
-            System.out.println(wk.toString() + " " + temp.get(wk));
-        }
+        System.out.println("TIME: "+(System.currentTimeMillis()-sT));
 
 
-        System.out.println("TESTE!!!");
-        System.out.println(interestByWeek.get(interestByWeek.keySet().toArray()[0]));
-        System.out.println(interestByWeek.get(interestByWeek.keySet().toArray()[1]));
+
+       /*for(LocalDate wk:interestByStartWeek.keySet())
+               for(String lang:langs){
+                   int wk1 = interestByWeek.get(wk).get(lang);
+                   LocalDate closest = interestByStartWeek.ceilingKey(wk.plusMonths(12));
+                   int wk2 = interestByWeek.get(closest).get(lang);
+                   System.out.println("Week1: "+wk+"Value: "+wk1+" Week2: "+closest+"Value: "+wk2);
+               }*/
+
+        /*for(Week wk: interestByWeek.keySet()){
+            for(String lang:langs) {
+                int wk1 = interestByWeek.get(wk).get(lang);
+                LocalDate twelveStart = wk.start().plusMonths(12);
+                LocalDate twelveEnd = wk.end().plusMonths(12);
+                Week closest = interestByWeek.ceilingKey(new Week(twelveStart,twelveEnd));
+                int wk2 = interestByWeek.get(closest).get(lang);
+
+            }
+        }*/
+
+
+
 
 
         //Question 13: Languages popular at University may be higher in September and October
@@ -261,26 +284,45 @@ public class Final {
         System.out.println("Q13: ");
         System.out.printf("Acad Year\tAvg Yr\tAvg Sep/Oct\n");
 
-
+        // Will iterate through the years 2004 to 2014, because 2015 has no data for academic months
         for (int i=2004;i<2015;i++){
-            float totalJava =0;
-            int totalCount =0;
-            float acadJava = 0;
-            int acadCount =0;
-            for (Week wk:interestByWeek.keySet())
-                if(wk.start().isAfter(LocalDate.of(i,Month.JANUARY, 1)) && wk.start().isBefore(LocalDate.of(i+1,Month.JANUARY, 1))) {
-                    totalJava += interestByWeek.get(wk).get("java");
+            //Initialize variables
+            float totalJava =0; // Holds the total interest throughout the year
+            int totalCount =0;  // Holds the number of weeks included
+            float acadJava = 0; // Holds the total interest for the academic months
+            int acadCount =0;   // Holds the number of weeks included
+            String lang = "java";// Holds the language to calculate for
+            for (Week wk:interestByWeek.keySet()) {
+                // Check if the week is inside the current year
+                // (week start is after 1st of September of the current year and week end is before 1st of September of the next year)
+                if (wk.start().isAfter(LocalDate.of(i, Month.SEPTEMBER, 1)) && wk.start().isBefore(LocalDate.of(i + 1, Month.SEPTEMBER, 1))) {
+                    // Accumulates interest for the language and increments the counter
+                    totalJava += interestByWeek.get(wk).get(lang);
                     totalCount++;
                 }
-            for (Week wk:interestByWeek.keySet())
-                if(wk.start().isAfter(LocalDate.of(i,Month.SEPTEMBER, 1)) && wk.start().isBefore(LocalDate.of(i,Month.NOVEMBER, 1))) {
-                    acadJava += interestByWeek.get(wk).get("java");
+                // Check if the week is inside the current academic year
+                // (week start is after 31st of August of the current year and week end is before 1st of November of the current year)
+                if (wk.start().isAfter(LocalDate.of(i, Month.AUGUST, 31)) && wk.start().isBefore(LocalDate.of(i, Month.NOVEMBER, 1))) {
+                    // Accumulates interest for the language and increments the counter
+                    acadJava += interestByWeek.get(wk).get(lang);
                     acadCount++;
                 }
-            System.out.printf("%s\t%1.2f\t%1.2f\t%s\n",i+"/"+(i+1),totalJava/totalCount,acadJava/acadCount,"java");
+            }
+            // Prints "Academic Year", "Language average for whole year", "Language average for academic months", "Language"
+            System.out.printf("%s\t%1.2f\t%1.2f\t%s\n",i+"/"+(i+1),totalJava/totalCount,acadJava/acadCount,lang);
         }
 
 
 
+
+    }
+
+    public static LocalDate closestWeek (TreeMap<LocalDate,?> map, LocalDate key){
+        LocalDate keys = key.plusMonths(12);
+        for(LocalDate wk: map.keySet()){
+            if(keys.isAfter(wk.minusWeeks(1)) && keys.isBefore(wk.plusWeeks(1)))
+                return wk;
+        }
+        return null;
     }
 }
