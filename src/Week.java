@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 
 /**
- * Created by antero on 14/11/15.
+ * Created by Antero on 14/11/15.
  *
  * Class Week turns an input of two strings in the format YYYY-MM-DD into LocalDate Objects
  * Making it possible to use all the methods in the LocalDate class rather than just having a String.
@@ -49,6 +49,8 @@ public class Week implements Comparable<Week> {
     }
 
     @Override
+    // Override method to make Week objects comparable. The use of the .start() method makes the comparison between
+    // two LocalDate values, which already has a well defined compareTo() method.
     public int compareTo(Week otherWeek) {
         return this.start().compareTo(otherWeek.start());
     }
