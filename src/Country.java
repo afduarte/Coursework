@@ -11,20 +11,20 @@ import java.util.TreeMap;
  */
 public class Country {
     //Fields
-    private String country;
-    private TreeMap<Integer,TreeMap<String,Integer>> langInterestByYear;
+    private String country; // The name of the country
+    private TreeMap<Integer,TreeMap<String,Integer>> langInterestByYear; // A TreeMap that holds the TreeMap of language to interest against an Integer key (the year)
 
-    private String[] langs = new String[]{"java","c++","c#","python","JavaScript"};
+    private String[] langs = new String[]{"java","c++","c#","python","JavaScript"}; // The list of languages
     // Methods
     public void setYear(int year,int[] interestInLang){
         //Takes a year and an array of Integer(interest in each language) and puts them into a TreeMap
-        //That TreeMap is then put into the TreeMap langInterestByYear of this() country
+        //That TreeMap is then put into the TreeMap langInterestByYear of this country
         TreeMap<String,Integer> interestByLang = new TreeMap<>();
         for(int i=0;i<langs.length;i++)
             interestByLang.put(langs[i],interestInLang[i]);
         this.langInterestByYear.put(year,interestByLang);
     }
-
+    // Method to get either the most or the least popular language in a specified year.
     public String popInYear(int year,String maxOrmin){
         int valOfPop;
         switch (maxOrmin.toLowerCase()){
@@ -51,52 +51,66 @@ public class Country {
         }
     }
 
+    // Method to return an Integer that represents the interest in a given language for a given year
     public int getInterest(int year,String lang) {
         return this.langInterestByYear.get(year).get(lang);
     }
 
+    // Method to return a sum of all the interest values in all the languages for a given year.
     public int getCombinedInterest(int year){
-        int combined=0;
-        for(String lang:langs)
-            combined+= this.getInterest(year,lang);
-        return combined;
-
+        // Checks if there is data for this country, if there is no data, returns 0.
+        if(this.hasYear(year)) {
+            // If there is data, accumulates the interest for every language
+            int combined = 0;
+            for (String lang : langs)
+                combined += this.getInterest(year, lang);
+            return combined;
+        } else return 0;
     }
 
+    // Checks if the country has the given year by checking against the keys in the TreeMap.
+    // Returns a boolean value
     public boolean hasYear(int year){
         return this.langInterestByYear.containsKey(year);
     }
 
+    // Returns a TreeMap of the interest in the different languages if the interest value is higher than 0
+    // Organized by year
     public TreeMap<Integer,Integer> getInterestByYear(String lang) {
         TreeMap<Integer,Integer> interestInLangByYear = new TreeMap<>();
         for(int year:this.getYears()) {
             int interestInLang = this.langInterestByYear.get(year).get(lang);
-            if(interestInLang!=0)
+            if(interestInLang > 0)
                 interestInLangByYear.put(year,interestInLang);
         }
         return interestInLangByYear;
     }
 
+    // Returns a TreeMap of the interest in the different languages if the interest value is higher than 0
+    // Organized by language
     public TreeMap<String,Integer> getInterestByLang(int year) {
         TreeMap<String,Integer> interestInLangByYear = new TreeMap<>();
         for (String lang : langs) {
             int interestInLang = langInterestByYear.get(year).get(lang);
-            if (interestInLang != 0)
+            if (interestInLang > 0)
                 interestInLangByYear.put(lang, interestInLang);
         }
         return interestInLangByYear;
     }
 
+    // Returns the name of the country
     public String getName() {
         return this.country;
     }
 
+    // Returns an ArrayList of every year for which this country has data for
     public ArrayList<Integer> getYears(){
         return new ArrayList<>(this.langInterestByYear.keySet());
     }
 
     @Override
-            public String toString(){
+    // Simply provides a toString method.
+    public String toString(){
         String years = this.langInterestByYear.keySet().toString();
         return String.format("This country is %s, I have data from the following years: %s",this.country,years);
     }

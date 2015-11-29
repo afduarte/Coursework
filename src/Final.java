@@ -1,11 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.security.Key;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.Period;
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Created by antero on 26/11/15.
@@ -90,108 +87,28 @@ public class Final {
         //Question 6: Which regions have demonstrated interests in exactly two programming language in 2010? (Give the region and the two languages.)
 
         System.out.println("Q6 The following countries have demonstrated interest in exactly 2 languages in 2010: ");
+        // Stream the values in world
         world.values().stream()
+                // filter for the countries that have the year 2010 and have shown interest in 2 languages
                 .filter(c -> c.hasYear(2010) && c.getInterestByLang(2010).size() == 2)
-                .forEach(c ->System.out.println("\t"+c.getName()+" has shown interest in: "
-                        +c.getInterestByLang(2010).keySet().toArray()[0]+" and "
-                        +c.getInterestByLang(2010).keySet().toArray()[1]));
-
-        //Question 7: What are the most and least popular programming languages all over the world in 2014 ()?
-        TreeMap<String,Integer> popularity = new TreeMap<>();
-        for(Week wk:interestByWeek.keySet())
-            if (wk.start().getYear() == 2014)
-                for (String lang : langs)
-                    if (popularity.get(lang) == null) {
-                        popularity.put(lang, interestByWeek.get(wk).get(lang));
-                    } else {
-                        popularity.put(lang, popularity.get(lang) + interestByWeek.get(wk).get(lang));
-                    }
-
-        System.out.println(popularity);
-
-        int valOfPop=(Collections.max(popularity.values()));  // This will return max value in the TreeMap
-        int valOfNotPop=(Collections.min(popularity.values()));  // This will return max value in the TreeMap
-        String mostPop="";
-        String leastPop="";
-        for (Map.Entry<String, Integer> entry : popularity.entrySet()) {
-            if (entry.getValue()==valOfPop) {
-                mostPop = entry.getKey();
-            } else if(entry.getValue()==valOfNotPop) {
-                leastPop = entry.getKey();
-            }
-        }
-        System.out.printf("Q7 For 2014(iot file), the most popular language was %s and the least popular was %s \n",mostPop,leastPop);
-
-        for(Country c:world.values()){
-            for(String lang:langs){
-                if (popularity.get(lang) == null) {
-                    popularity.put(lang, c.getInterest(2014,lang));
-                } else {
-                    popularity.put(lang, popularity.get(lang) + c.getInterest(2014,lang));
-                }
-            }
-        }
-        System.out.println(popularity);
-        valOfPop=(Collections.max(popularity.values()));  // This will return max value in the Hashmap
-        valOfNotPop=(Collections.min(popularity.values()));  // This will return max value in the Hashmap
-        mostPop="";
-        leastPop="";
-        for (Map.Entry<String, Integer> entry : popularity.entrySet()) {  // Itrate through hashmap
-            if (entry.getValue()==valOfPop) {
-                mostPop = entry.getKey();     // Print the key with max value
-            } else if(entry.getValue()==valOfNotPop) {
-                leastPop = entry.getKey();
-            }
-        }
-        System.out.printf("Q7 For 2014(2014 file), the most popular language was %s and the least popular was %s \n",mostPop,leastPop);
-
-
-
+                // for each country that is still in the stream, print the name and the languages it has shown interest in
+                .forEach(c ->System.out.printf("\t%s has shown interest in: %s and %s\n",c.getName(),c.getInterestByLang(2010).keySet().toArray()[0],c.getInterestByLang(2010).keySet().toArray()[1]));
 
         //Question 8: Which are the least popular programming languages in the United Kingdom for each of the years 2009 to 2014?
         System.out.println("Q8");
+        // Go through the years 2009 to 2014
         for(int i =2009;i<=2014;i++)
-            System.out.printf("\tLeast popular for year %d is: %s\n",i,world.get("United Kingdom").popInYear(i,"min"));
+            // Check if there is data for the specified country in the specified year
+            if(world.get("United Kingdom").hasYear(i))
+                // Print the year and get the least popular language by using the method popInYear provided by the country class
+                System.out.printf("\tLeast popular for year %d is: %s\n",i,world.get("United Kingdom").popInYear(i,"min"));
 
-        //Question 9: In which year did JavaScript have the greatest minimum interest? Consider the year that week starts in.
-
-        TreeMap<Integer,Integer> jsMinIOT = new TreeMap<>();
-        int jsMinInterest = 0;
-        for(Week wk: interestByWeek.keySet()) {
-            if(interestByWeek.get(wk).get("JavaScript")>jsMinInterest)
-                if(jsMinIOT.get(wk.start().getYear())==null) {
-                    jsMinIOT.put(wk.start().getYear(), interestByWeek.get(wk).get("JavaScript"));
-                } else if(jsMinIOT.get(wk.start().getYear())>interestByWeek.get(wk).get("JavaScript"))
-                    jsMinIOT.put(wk.start().getYear(), interestByWeek.get(wk).get("JavaScript"));
-        }
-        Map.Entry<Integer,Integer> maxOfMin = null;
-        for(Map.Entry entry:jsMinIOT.entrySet())
-            maxOfMin = maxOfMin==null || Integer.parseInt(entry.getValue().toString()) > maxOfMin.getValue()?entry:maxOfMin;
-        System.out.println("Q9: JavaScript had the greatest minimum interest in: "+maxOfMin.getKey());
-
-        //Question 10: Since 2010, which regions have demonstrated the most interests in Python, and which programming languages were those regions least interested in?
-        //NOT SOLVED YET!!!
-        TreeMap<Integer,String> mostInPython = new TreeMap<>();
-        for(Country c:world.values())
-            for (int i = 2010; i <= 2015; i++)
-                if (c.hasYear(i)) {
-                    for(Map.Entry entry:mostInPython.entrySet()) {
-                        if (entry.getValue().equals(c.getName())) {
-                            if (mostInPython.size() < 5) {
-                                mostInPython.put(c.getInterest(i, "python"), c.getName());
-                            } else {
-                                mostInPython.remove(mostInPython.firstKey());
-                                mostInPython.put(c.getInterest(i, "python"), c.getName());
-                            }
-                        }
-                    }
-                }
-        //System.out.println(mostInPython);
 
         //Hard ones:
-        System.out.println("Hard Ones:");
+        System.out.println("\nHard Ones:");
         //Question 11: Which are the top 5 regions that demonstrated significant growth of interests in programming languages in general?
         //Significant growth will be 20% more than the interest in first year
+        System.out.println("\nQ11:");
 
         TreeMap<String,Integer> grownInterest = new TreeMap<>(); //Holds growth against  country name
         world.values().stream()
@@ -208,65 +125,76 @@ public class Final {
                 //Print the limited stream
                 .forEach(x -> System.out.println(x.getKey()+" grew "+x.getValue()+" points."));
 
-        //Question 12: Which programming language set the record for losing the most interests over a 12 months period? When did this happen?
-        long sT=System.currentTimeMillis();
-        System.out.println("Q12:");
-        TreeMap<LocalDate,TreeMap<String,Integer>> interestByStartWeek = new TreeMap<>();
+
+
+        //Question 12: Which programming language set the record for losing the most interests over a 12 months period?
+        // When did this happen?
+        System.out.println("\nQ12:");
+        //Create a clone of the interestWeek Map that indexes by the starting LocalDate instead of a pair of LocalDates
+        TreeMap<LocalDate,TreeMap<String,Integer>> interestByStartDate = new TreeMap<>();
         for(Map.Entry entry:interestByWeek.entrySet()) {
             Week wk = (Week)entry.getKey();
-            TreeMap<String,Integer> val = (TreeMap<String, Integer>) entry.getValue();
-            interestByStartWeek.put(wk.start(),val);
+            TreeMap<String,Integer> val = (TreeMap<String,Integer>) entry.getValue();
+            interestByStartDate.put(wk.start(),val);
         }
 
 
         //Week holds two values of type LocalDate. Even though it wasn't created to work like this,
-        // it can hold values with a 12 month difference, being perfect to hold the localdates for this case.
-        Week lossPair = null;
+        // it can hold values with a 12 month difference, being perfect to hold the LocalDates for this case.
+
+        //Initialize values that will be needed to print the answer and keep track of the biggest loss of interest so far
+        ArrayList<Week> lossPair = null;
         String lossLang = "";
         int loss = 0;
 
-        for(LocalDate wk:interestByStartWeek.keySet()) {
+        //Go through interestByStartDate
+        for(LocalDate wk:interestByStartDate.keySet()) {
+            // Check every language returned for that week
             for (String lang : langs) {
-                int wk1 = interestByStartWeek.get(wk).get(lang);
-                LocalDate closest = closestWeek(interestByStartWeek, wk);
-                if (closest != null) {
-                    int wk2 = interestByStartWeek.get(closest).get(lang);
-                    if(wk1-wk2>loss){
-                        lossPair = new Week(wk,closest);
-                        lossLang = lang;
-                        loss = wk1-wk2;
+                // wk1 holds the interest for the language "lang" in the week "wk"
+                int wk1 = interestByStartDate.get(wk).get(lang);
+                // Get list of weeks that exist in the map and are 12 months after the week "wk" (within 1 week tolerance)
+                ArrayList<LocalDate> closestArray = getCloseWeeks(interestByStartDate, wk);
+                // If closestArray is not empty and for each Date in said array, get the interest for each language "lang"
+                // and act accordingly
+                if (!closestArray.isEmpty()) {
+                    for(LocalDate closest:closestArray) {
+                        int wk2 = interestByStartDate.get(closest).get(lang);
+                        /* There are 2 different scenarios:
+                         *      1. The language "lang" is the same as the current lossLang (language with highest loss)
+                         *         and the loss (difference between wk1 and wk2) is the same value.
+                         *      2. The loss is higher than the current highest and the language is either the same or a
+                         *         different one (doesn't matter because even if it is the same language but there are
+                         *         different loss values, the Array would have to be cleared).
+                         */
+                        if(lang.equals(lossLang) && wk1-wk2==loss) {
+                            // If 1 is the case, lossPair ArrayList is initialized if it is null, and the 12 month period
+                            // is added to it as an object of type Week.
+                            if (lossPair == null)
+                                lossPair = new ArrayList<>();
+                            lossPair.add(new Week(wk, closest));
+                            // If 2 is the case, the ArrayList is cleared and the 12 month period is added to it as an
+                            // object of type Week. The current values are updated: lossLang and loss
+                        }   else if(wk1-wk2 > loss){
+                            // Even though clearing the existing ArrayList instead of creating a new one would be more
+                            // efficient, not having to check if it was initialized before (null check) simplifies the code.
+                            lossPair = new ArrayList<>();
+                            lossPair.add(new Week(wk, closest));
+                            lossLang = lang;
+                            loss = wk1-wk2;
+                        }
                     }
                 }
             }
         }
-
-        System.out.printf("%s lost the most interest(%d points) from %s to %s\n",lossLang,loss,lossPair.start(),lossPair.end());
-
-        System.out.println("TIME: "+(System.currentTimeMillis()-sT));
-
-
-
-       /*for(LocalDate wk:interestByStartWeek.keySet())
-               for(String lang:langs){
-                   int wk1 = interestByWeek.get(wk).get(lang);
-                   LocalDate closest = interestByStartWeek.ceilingKey(wk.plusMonths(12));
-                   int wk2 = interestByWeek.get(closest).get(lang);
-                   System.out.println("Week1: "+wk+"Value: "+wk1+" Week2: "+closest+"Value: "+wk2);
-               }*/
-
-        /*for(Week wk: interestByWeek.keySet()){
-            for(String lang:langs) {
-                int wk1 = interestByWeek.get(wk).get(lang);
-                LocalDate twelveStart = wk.start().plusMonths(12);
-                LocalDate twelveEnd = wk.end().plusMonths(12);
-                Week closest = interestByWeek.ceilingKey(new Week(twelveStart,twelveEnd));
-                int wk2 = interestByWeek.get(closest).get(lang);
-
-            }
-        }*/
-
-
-
+        //Print the results. Used iterator for loop to easily detect the last time it loops and print a new line character.
+        System.out.printf("%s lost the most interest(%d points) in the following 12 month periods: ",lossLang,loss);
+        for (Iterator<Week> iterator = lossPair.iterator(); iterator.hasNext(); ) {
+            Week wk = iterator.next();
+            System.out.printf("|%s| ", wk);
+            if(!iterator.hasNext())
+                System.out.printf("\n");
+        }
 
 
         //Question 13: Languages popular at University may be higher in September and October
@@ -281,7 +209,7 @@ public class Final {
         //2013/14	5.94	6.67 c++
         //2014/15	5.76	6.50 c++
 
-        System.out.println("Q13: ");
+        System.out.println("\nQ13: ");
         System.out.printf("Acad Year\tAvg Yr\tAvg Sep/Oct\n");
 
         // Will iterate through the years 2004 to 2014, because 2015 has no data for academic months
@@ -315,14 +243,23 @@ public class Final {
 
 
 
-    }
 
-    public static LocalDate closestWeek (TreeMap<LocalDate,?> map, LocalDate key){
-        LocalDate keys = key.plusMonths(12);
-        for(LocalDate wk: map.keySet()){
-            if(keys.isAfter(wk.minusWeeks(1)) && keys.isBefore(wk.plusWeeks(1)))
-                return wk;
-        }
-        return null;
+
+
+    }
+    // Method to find a match in the map for the closest week 12 months after the input date
+    // Returns an ArrayList of all the matches with a tolerance of one week before the date and one week after the date
+    public static ArrayList<LocalDate> getCloseWeeks(TreeMap<LocalDate,?> map, LocalDate originalDate){
+        //Takes in originalDate and adds 12 months
+        LocalDate twelveAfter = originalDate.plusMonths(12);
+        //Create an ArrayList to hold the LocalDate values that match the criteria
+        ArrayList<LocalDate> answer = new ArrayList<>();
+        // Go through the input map and check if it is within the tolerance timespan
+        for(LocalDate wk: map.keySet()){                                                        // Although a stream API
+            if(twelveAfter.isAfter(wk.minusWeeks(1)) && twelveAfter.isBefore(wk.plusWeeks(1)))  // call could have been
+                answer.add(wk);                                                                 // used, there was a
+        }                                                                                       // performance loss in doing so.
+        // Returns the ArrayList
+        return answer;
     }
 }
