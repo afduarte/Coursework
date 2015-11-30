@@ -49,6 +49,8 @@ public class Week implements Comparable<Week> {
     }
 
     @Override
+    // Override method to make Week objects comparable. The use of the .start() method makes the comparison between
+    // two LocalDate values, which already has a well defined compareTo() method.
     public int compareTo(Week otherWeek) {
         return this.start().compareTo(otherWeek.start());
     }
