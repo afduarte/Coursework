@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="366818ad-6b76-470d-8475-f46b02bfcba1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Country.java" afterPath="$PROJECT_DIR$/src/Country.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Final.java" afterPath="$PROJECT_DIR$/src/Final.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Week.java" afterPath="$PROJECT_DIR$/src/Week.java" />
     </list>
     <ignored path="Coursework.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -745,7 +742,7 @@
       <workItem from="1448474125096" duration="657000" />
       <workItem from="1448547025565" duration="18996000" />
       <workItem from="1448788688604" duration="351000" />
-      <workItem from="1448802593750" duration="17975000" />
+      <workItem from="1448802593750" duration="18064000" />
     </task>
     <task id="LOCAL-00001" summary="Created Country Class, changed some answers to use Country objects">
       <created>1447372032461</created>
@@ -795,11 +792,17 @@
       <option name="project" value="LOCAL" />
       <updated>1448841378763</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Finished commenting, chose questions, finished project">
+      <created>1448841633359</created>
+      <option name="number" value="00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1448841633359</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="132715000" />
+    <option name="totallyTimeSpent" value="132804000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="30" width="1368" height="739" extended-state="6" />
