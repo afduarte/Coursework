@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 
 /**
- * Created by antero on 14/11/15.
+ * Created by Antero on 14/11/15.
  *
  * Class Week turns an input of two strings in the format YYYY-MM-DD into LocalDate Objects
  * Making it possible to use all the methods in the LocalDate class rather than just having a String.

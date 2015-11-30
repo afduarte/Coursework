@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by antero on 12/11/15.
+ * Created by Antero on 12/11/15.
  * Class country stores all the data for a country in a TreeMap of Integer(year) to
  * a TreeMap of String(language) to Integer(interest in language)
  *

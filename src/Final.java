@@ -5,7 +5,11 @@ import java.time.Month;
 import java.util.*;
 
 /**
- * Created by antero on 26/11/15.
+ * Created by Antero on 26/11/15.
+ *
+ * The code will be publicly available on https://github.com/afduarte after the submission date, if this poses a problem,
+ * please inform me not to do so.
+ *
  */
 public class Final {
     public static void main(String[] args) throws Exception {
