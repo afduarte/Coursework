@@ -14,7 +14,7 @@ import java.util.*;
 public class Final {
     public static void main(String[] args) throws Exception {
         BufferedReader fh =
-                new BufferedReader(new FileReader("data/iot.txt"));             //Open file iot.txt
+                new BufferedReader(new FileReader("iot.txt"));             //Open file iot.txt
         //First line contains the language names
         String s = fh.readLine();
         List<String> langs =
@@ -45,7 +45,7 @@ public class Final {
             //Temporary holder for the country name and interest values
             TreeMap<String,int[]> interestMap = new TreeMap<>();
             BufferedReader getInterest =
-                    new BufferedReader(new FileReader("data/"+i+".txt"));
+                    new BufferedReader(new FileReader(i+".txt"));
             String s2 = getInterest.readLine(); //Throw away the first line
 
 
